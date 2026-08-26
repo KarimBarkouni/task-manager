@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 public class TaskController {
@@ -23,7 +24,7 @@ public class TaskController {
     public List<Task> getTasks() {
         return taskRepository.findAll();
     }
-    
+
     @GetMapping("/api/tasks/{id}")
     public Task getTask(@PathVariable Long id) {
         return taskRepository.findById(id)
@@ -38,4 +39,20 @@ public class TaskController {
         return taskRepository.save(task);
     }
     
+    @PutMapping("/api/tasks/{id}")
+    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Task not found"
+                ));
+
+        task.setTitle(updatedTask.getTitle());
+        task.setDescription(updatedTask.getDescription());
+        task.setCompleted(updatedTask.isCompleted());
+        task.setPriority(updatedTask.getPriority());
+
+        return taskRepository.save(task);
+    }
 }
