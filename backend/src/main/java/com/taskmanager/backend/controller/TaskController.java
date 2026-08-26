@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @RestController
 public class TaskController {
@@ -19,6 +22,15 @@ public class TaskController {
     @GetMapping("/api/tasks")
     public List<Task> getTasks() {
         return taskRepository.findAll();
+    }
+    
+    @GetMapping("/api/tasks/{id}")
+    public Task getTask(@PathVariable Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Task not found"
+                ));
     }
 
     @PostMapping("/api/tasks")
