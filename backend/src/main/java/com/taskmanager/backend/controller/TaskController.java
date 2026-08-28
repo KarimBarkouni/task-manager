@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 public class TaskController {
@@ -54,5 +56,20 @@ public class TaskController {
         task.setPriority(updatedTask.getPriority());
 
         return taskRepository.save(task);
+    }
+
+   @DeleteMapping("/api/tasks/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+
+        if (!taskRepository.existsById(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Task not found"
+            );
+        }
+
+        taskRepository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
