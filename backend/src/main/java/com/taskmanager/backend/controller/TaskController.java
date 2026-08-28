@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 
 @RestController
 public class TaskController {
@@ -37,12 +38,12 @@ public class TaskController {
     }
 
     @PostMapping("/api/tasks")
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@Valid @RequestBody Task task) {
         return taskRepository.save(task);
     }
     
     @PutMapping("/api/tasks/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask) {
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -73,3 +74,4 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 }
+//.\mvnw.cmd spring-boot:run
